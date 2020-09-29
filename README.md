@@ -9,54 +9,57 @@
 ### 모델 설명
 ```python
 class Lecture(models.Model):
-    professor = models.ForeignKey('Professor', on_delete=models.CASCADE, related_name='lectures')
-    lecture_id = models.CharField(max_length=30, primary_key=True)
-    faculty = models.CharField(max_length=30)
-    department = models.CharField(max_length=30)
-    semester = models.CharField(max_length=30)
-    grade = models.IntegerField()
-    name = models.CharField(max_length=30)
-    credit = models.IntegerField()
-    classroom = models.CharField(max_length=50)
-    time = models.CharField(max_length=50)
+    professor = models.ForeignKey('Professor', on_delete=models.CASCADE, related_name='lectures', verbose_name='담당교수')
+    code = models.CharField('학정번호', max_length=30)
+    faculty = models.CharField('학부대학', max_length=30)
+    department = models.CharField('전공', max_length=30)
+    semester = models.CharField('학기', max_length=30)
+    grade = models.IntegerField('학년')
+    name = models.CharField('교과목명', max_length=30)
+    credit = models.IntegerField('학점')
+    classroom = models.CharField('강의실', max_length=50)
+    time = models.CharField('강의시간', max_length=50)
 
     def __str__(self):
         return self.name
 ```
 ```python
 class Professor(models.Model):
-    name = models.CharField(max_length=30)
-    department = models.CharField(max_length=30, null=True)
-    office = models.CharField(max_length=30, null=True)
-    phone = models.CharField(max_length=30, null=True)
-    email = models.CharField(max_length=50)
+    name = models.CharField('이름', max_length=30)
+    department = models.CharField('소속', max_length=30, null=True, blank=True)
+    office = models.CharField('연구실', max_length=30, null=True, blank=True)
+    phone = models.CharField('연락처', max_length=30, null=True, blank=True)
+    email = models.EmailField('이메일', null=True, blank=True)
 
     def __str__(self):
         return self.name
 ```
 ```python
-class Mileage(models.Model):
-    lecture = models.ForeignKey('Lecture', on_delete=models.CASCADE, related_name='mileages')
-    mileage = models.IntegerField()
-    is_major = models.CharField(max_length=10)
-    grade = models.IntegerField()
-    success = models.CharField(max_length=10)
+class Rank(models.Model):
+    lecture = models.ForeignKey('Lecture', on_delete=models.CASCADE, related_name='ranks', verbose_name='과목')
+    mileage = models.IntegerField('마일리지')
+    is_major = models.BooleanField('전공 여부')
+    is_included = models.BooleanField('전공자 정원 포함 여부')
+    grade = models.IntegerField('학년')
+    success = models.BooleanField('수강 여부')
 ```
 ```python
 class Result(models.Model):
-    lecture = models.OneToOneField('Lecture', on_delete=models.CASCADE, primary_key=True)
-    quota = models.IntegerField()
-    major_quota = models.IntegerField()
-    participants = models.IntegerField()
-    max_mileage = models.IntegerField()
+    lecture = models.OneToOneField('Lecture', on_delete=models.CASCADE, verbose_name='과목')
+    quota = models.IntegerField('정원')
+    participants = models.IntegerField('참여 인원')
+    major_quota = models.IntegerField('전공자 정원')
+    include_second_major = models.BooleanField('복수전공 포함 여부')
+    max_mileage = models.IntegerField('최대 마일리지')
 ```
 ```python
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    student_id = models.IntegerField(primary_key=True)
-    major = models.CharField(max_length=30)
-    second_major = models.CharField(max_length=30, null=True)
-    grade = models.IntegerField()
+    lectures = models.ManyToManyField(Lecture, related_name='users')
+    student_id = models.IntegerField('학번', unique=True)
+    major = models.CharField('전공', max_length=30, choices=MAJOR_CHOICES)
+    second_major = models.CharField('복수전공', max_length=30, null=True, blank=True, choices=MAJOR_CHOICES)
+    grade = models.IntegerField('학년')
 ```
 
 ### ORM 적용해보기
@@ -75,6 +78,7 @@ class Profile(models.Model):
 >>> b.professor = w
 >>> b.save()
 >>> w.lectures.create(lecture_id="CSI2103-02", faculty="공과대학", department="컴퓨터과학전공", semester="2020-1", grade="3", name="자료구조", credit="3", classroom="공D504", time="화4/목6,7")
+# Lecture.objects.create(professor=w, ~)도 같은거
 ```
 2. 삽입한 객체들을 쿼리셋으로 조회해보기
 ```python
