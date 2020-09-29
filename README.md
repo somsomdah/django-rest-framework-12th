@@ -29,7 +29,7 @@ shell에서 작성한 코드와 그 결과를 보여주세요!
 
 
 ## 3주차 과제 (기한: 10/3 토요일까지)
-[과제 안내 노션](https://www.notion.so/2-Django-ORM-c46e2d2f88ac4d948d012c07605d8e03)
+[과제 안내 노션](https://www.notion.so/3-DRF1-API-View-6d49c6ad888d4f249ffb52f0885c66d7)
 
 ### 모델 선택 및 데이터 삽입
 선택한 모델의 구조와 데이터 삽입 후의 결과화면을 보여주세요!
