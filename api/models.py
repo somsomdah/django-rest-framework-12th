@@ -1,8 +1,29 @@
 from django.db import models
 
-# 모델링 과제를 이곳에서 해주시면 됩니다! (주석은 나중에 지우셔도 돼요!)
+class Department(models.Model):
+    division=models.CharField(max_length=20)
+    department=models.CharField(max_length=20)
 
-# [제약조건]
-# 1. 1:1과 1:n의 관계 포함
-# 2. 각 모델에 필드 최소 3개 이상 포함
-# 3. 서비스 관련 모델 3개 이상 + 유저 모델 1개 구현 (단, 유저는 필수 아님)
+class Major(models.Model):
+    department=models.ForeignKey(Department,on_delete=models.SET_NULL,set_null=True,blank=True)
+    major=models.CharField(max_length=40)
+
+class User(models.Model):
+    code=models.CharField(max_length=10)
+    name=models.CharField(max_length=40)
+    group=models.CharField(max_length=20,verbose_name='교수 또는 학생 또는 대학원생')
+    department=models.ForeignKey(Department,on_delete=models.SET_NULL,set_null=True,blank=True)
+
+class MajorIn(models.Model):
+    student=models.ForeignKey(User,on_delete=models.CASCADE)
+    major=models.ForeignKey(Major,on_delete=models.CASCADE)
+
+class Course(models.Model):
+    code=models.CharField(max_length=10)
+    name=models.CharField(max_length=40)
+    professor=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
+    classroom=models.CharField(max_length=10)
+
+class Enrollment(models.Model):
+    student=models.ForeignKey(User,on_delete=models.CASCADE)
+    course=models.ForeignKey(Course,on_delete=models.CASCADE)
