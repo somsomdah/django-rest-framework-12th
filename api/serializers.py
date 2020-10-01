@@ -14,7 +14,7 @@ class MajorSerializer(serializers.ModelSerializer):
 class MajorInSerializer(serializers.ModelSerializer):
     class Meta:
         model=MajorIn
-        fields=['major_id','user_id']
+        fields=['id','major_id','user_id']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
