@@ -4,6 +4,6 @@ from .models import *
 admin.site.register(Department)
 admin.site.register(Major)
 admin.site.register(MajorIn)
-admin.site.register(User)
+admin.site.register(Profile)
 admin.site.register(Course)
 admin.site.register(Enrollment)
