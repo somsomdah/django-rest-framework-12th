@@ -263,7 +263,7 @@ urlpatterns=[
 `DELETE : api/profile/7` (정상적으로 삭제됨)
 
 ### 공부한 내용 정리
-####새로 알게된 점
+__새로 알게된 점__  
 __git__
 ![](imgs/git_lifecycle.png)
 - add 취소 :
@@ -287,14 +287,14 @@ $ git reset [commit_id]
 $ git commit -m "commit message"
 ```
 
-####정리 하고 싶은 개념
+__정리 하고 싶은 개념__
 - serialization : 모델 인스턴스와 같은 복잡한 데이터를 json, xml 등으로 쉽게 렌더링 할 수 있는 python datatype으로 변환
 - serializer를 생성하기 위해 rest_framework.serializers.ModelSerializer를 상속한다.
 - CBV를 만들 때에는 rest_framework.views.APIView를 상속한다.
 - CBV에서 APIView의 post,get,put,delete 함수를 오버라이딩 한다.(???)
 - APIView에서 응답을 할 때에는 rest_framework.response.Response 함수를 사용.
 
-####궁금한점
+__궁금한점__
 - department_id의 값이 왜 변경이 안되는 지?
 
 ### 간단한 회고 
