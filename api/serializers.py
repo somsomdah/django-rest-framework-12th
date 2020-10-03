@@ -4,17 +4,17 @@ from .models import *
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Department
-        fields=['id','division','department']
+        fields='__all__'
 
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model=Major
-        fields=['id','major','department_id']
+        fields='__all__'
 
 class MajorInSerializer(serializers.ModelSerializer):
     class Meta:
         model=MajorIn
-        fields=['id','major_id','user_id']
+        fields='__all__'
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
