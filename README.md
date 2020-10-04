@@ -265,8 +265,8 @@ urlpatterns=[
 
 
 ### 공부한 내용 정리
-__1) 새로 알게된 점__
-__git__
+__1) 새로 알게된 점__  
+__git__  
 ![](imgs/git_lifecycle.png)
 - add 취소 :
 ```
