@@ -15,3 +15,7 @@ urlpatterns=[
     path('enrollment/', views.EnrollmentList.as_view()),
     path('enrollment/<int:pk>', views.EnrollmentDetail.as_view()),
 ]
+
+#append slash-> 끝에 slash 없으면 : api/profile->api/profile/
+# url endpoint에 format 추가
+# urlpatterns = format_suffix_patterns(urlpatterns)
