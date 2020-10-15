@@ -10,6 +10,26 @@ class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
 
+class DepartmentViewSet(viewsets.ModelViewSet):
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+
+class CourseViewSet(viewsets.ModelViewSet):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+class MajorViewSet(viewsets.ModelViewSet):
+    serializer_class = MajorSerializer
+    queryset = Major.objects.all()
+
+class MajorInViewSet(viewsets.ModelViewSet):
+    serializer_class = MajorInSerializer
+    queryset = MajorIn.objects.all()
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    serializer_class = EnrollmentSerializer
+    queryset = Enrollment.objects.all()
+
 
 '''
 

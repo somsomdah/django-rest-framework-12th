@@ -306,3 +306,104 @@ $ git commit -m "commit message"
 깃과의 전쟁을 치룬 일주일이었다. 푸시할 때 마다 작업한 게 날아가서 같은 코드를 4번씩 쓰는 신기한 경험을 했다. user model을 튜토리얼 따라서 새로 만들었는데 저게 맞는지 모르겠다(+규주님이 맞다고 하셨다). veiw에서 요청에 실패할 경우 응답을 보내는 방법(어떤 상태코드가 있는지)이 궁금하다.
  </div>
 </details>
+
+## 4주차 과제
+<details>
+ <summary> 과제 내용 보기 </summary>
+ <div markdown="1">
+ 
+## ViewSet
+
+### ViewSet이란?
+- APIView는 List와 Detail 이라는 두개의 클래스가 있음, ViewSet을  사용하면 단일 클래스에서 view를 정의할 수 있음
+- View들의 집합, 요청과 응답에 사용되는 여러개의 view들이 모여있음
+
+### 상속관계
+- APIView -> ViewSet
+- GenericAPIView -> GenericViewSet, ModelViewSet
+
+### ModelViewSet
+```python
+# APIView
+from rest_framework.views import APIView
+from rest_framework import status,response
+
+# api/profile/
+class ProfileList(APIView): #APIView 상속
+
+    # Profile 추가
+    def post(self,request,format=None):
+        serializer=ProfileSerializer(data=request.data) # serializer.data에 request.data 추가
+        if serializer.is_valid():
+            serializer.save() # 저장 : profile database에 반영됨
+            return response.Response(serializer.data,status=status.HTTP_201_CREATED) # 모든 profile을 json 형태로 응답
+        else:
+            return response.Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    # 모든 Profile 조회
+    def get(self, request,format=None): #모든 사용자 조회
+        queryset=Profile.objects.all() # 모든 profile 쿼리셋 반환
+        serializer=ProfileSerializer(queryset,many=True) # queryset serialize
+        return response.Response(serializer.data) # serialization 결과인 serializer.data(json)으로 응답
+
+# api/profile/pk
+class ProfileDetail(APIView):
+
+    # 특정 Profile 조회
+    def get(self,request,pk,format=None):
+        profile=Profile.objects.get(pk=pk) # Profile 인스턴스 반환
+        serializer=ProfileSerializer(profile) # Profile 인스턴스 serialize
+        return response.Response(serializer.data) # json 형태인 serializer.data로 응답
+
+    # 특정 Profile 수정
+    def put(self,request,pk,format=None):
+        profile=Profile.objects.get(pk=pk)
+        serializer=ProfileSerializer(profile,data=request.data) # profile 인스턴스를 serealize 후 request.data로 변경
+        if serializer.is_valid():
+            serializer.save() # 저장 : database에 반영됨
+            return response.Response(serializer.data) # 변경된 데이터로 응답
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 특정 Profile 제거
+    def delete(self,request,pk,format=None):
+        profile=Profile.objects.get(pk=pk) # 특정 profile 인스턴스를 받아서
+        profile.delete() # 삭제
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+```
+```python
+# ViewSet
+class ProfileViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Profile.objects.all()
+        serializer = ProfileSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Profile.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = ProfileSerializer(user)
+        return Response(serializer.data)
+```
+```python
+# ModelViewSet
+from rest_framework import viewsets
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+```
+- Viewset은 자신만의 viewset 정의, ModelViewSet은 사전에 정의된 뷰(Retrive, List,Create,Destroy,Update) 제공
+- ViewSet을 사용함으로써 반복 논리를 하나의 클래스로 결합 할 수 있다. 위의 예에서 쿼리셋은 한번만 지정하면 여러 view에서 사용된다.
+
+### Routers (urls.py)
+- Router 클래스로 URLconf를 직접 입력하지 않고 url을 다룰 수 있다.
+- 즉, router에 viewset을 등록하는 것은 urlpatterns 설정하기와 비슷하다.
+- DefaultRouter()  
+![](./imgs/default_router.PNG)
+    - router = DefaultRouter(trailing_slash=False) : 끝에 '/' 를 붙일지 말지의 여부
+    - {prefix} - The URL prefix to use for this set of routes. ex) api/profile/1 에서 "profile"
+    - {lookup} - The lookup field used to match against a single instance. ex) api/profile/1에서 "1"
+
+
+ </div>
+</details>
