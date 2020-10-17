@@ -9,7 +9,7 @@ class Department(models.Model):
         return "{} : {}".format(self.division,self.name)
 
 class Profile(models.Model):
-    code=models.CharField(max_length=10)
+    code=models.CharField(max_length=10,unique=True)
     name=models.CharField(max_length=40)
     group=models.CharField(max_length=20)
     department=models.ForeignKey(Department,on_delete=models.SET_NULL,null=True,blank=True)
@@ -32,7 +32,7 @@ class Course(models.Model):
     code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=40)
     professor = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-    classroom = models.CharField(max_length=20)
+    classroom = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return '{} : {}'.format(self.code, self.name)

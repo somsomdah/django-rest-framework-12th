@@ -1,14 +1,33 @@
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from rest_framework import status,response
-from rest_framework import viewsets
+from rest_framework import status,response,viewsets
+from rest_framework.decorators import action
 
 # Create your views here.
 
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+
+    # url : api/profile/list-professors/
+    @action(methods=['get'],detail=False,url_path='list-professors')
+    def list_professors(self, request):
+        qs = self.queryset.filter(group="P")
+        serializer = self.get_serializer(qs, many=True)
+        return response.Response(data=serializer.data,status=status.HTTP_200_OK)
+
+    # url : api/profile/{pk}/set-graduate/
+    @action(methods=['patch'],detail=True,url_path='set-graduate')
+    def set_graduate(self, request, pk):
+        instance = self.get_object()
+        if instance.group=="U":
+            instance.group = "G"
+            instance.code = request.data['code']
+            instance.department_id=request.data['department_id']
+            instance.save()
+        serializer = self.get_serializer(instance)
+        return response.Response(data=serializer.data,status=status.HTTP_200_OK)
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer

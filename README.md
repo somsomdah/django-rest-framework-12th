@@ -395,7 +395,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 - Viewset은 자신만의 viewset 정의, ModelViewSet은 사전에 정의된 뷰(Retrive, List,Create,Destroy,Update) 제공
 - ViewSet을 사용함으로써 반복 논리를 하나의 클래스로 결합 할 수 있다. 위의 예에서 쿼리셋은 한번만 지정하면 여러 view에서 사용된다.
 
-### Routers (urls.py)
+### routers (urls.py)
 - Router 클래스로 URLconf를 직접 입력하지 않고 url을 다룰 수 있다.
 - 즉, router에 viewset을 등록하는 것은 urlpatterns 설정하기와 비슷하다.
 - DefaultRouter()  
@@ -403,6 +403,20 @@ class ProfileViewSet(viewsets.ModelViewSet):
     - router = DefaultRouter(trailing_slash=False) : 끝에 '/' 를 붙일지 말지의 여부
     - {prefix} - The URL prefix to use for this set of routes. ex) api/profile/1 에서 "profile"
     - {lookup} - The lookup field used to match against a single instance. ex) api/profile/1에서 "1"
+
+### decorator action
+__action(methods,detail,url_name,url_path)__  
+- methods : request method 지정, default='get'
+- detail : True - pk 값 지정 필요
+     - detail=True
+        - url : /prefix/{pk}/{function name}/
+        - name : {model name}-{function name}
+    - detail=False
+        - url : /prefix/{function name}/
+        - name : {model name}-{function name}
+
+### PUT vs PATCH
+- PUT의 경우 자원 전체를 갱신하는 의미지만, PATCH는 해당자원의 일부를 교체하는 의미로 사용.
 
 
  </div>
