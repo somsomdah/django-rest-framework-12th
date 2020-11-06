@@ -268,8 +268,7 @@ urlpatterns=[
 
 
 ### 공부한 내용 정리
-####새로 알게된 점
-__git__
+
 ![](imgs/git_lifecycle.png)
 - add 취소 :
 ```
@@ -292,15 +291,13 @@ $ git reset [commit_id]
 $ git commit -m "commit message"
 ```
 
-####정리 하고 싶은 개념
+
 - serialization : 모델 인스턴스와 같은 복잡한 데이터를 json, xml 등으로 쉽게 렌더링 할 수 있는 python datatype으로 변환
 - serializer를 생성하기 위해 rest_framework.serializers.ModelSerializer를 상속한다.
 - CBV를 만들 때에는 rest_framework.views.APIView를 상속한다.
 - CBV에서 APIView의 post,get,put,delete 함수를 오버라이딩 한다.(???)
 - APIView에서 응답을 할 때에는 rest_framework.response.Response 함수를 사용.
 
-####궁금한점
-- department_id의 값이 왜 변경이 안되는 지?
 
 ### 간단한 회고 
 깃과의 전쟁을 치룬 일주일이었다. 푸시할 때 마다 작업한 게 날아가서 같은 코드를 4번씩 쓰는 신기한 경험을 했다. user model을 튜토리얼 따라서 새로 만들었는데 저게 맞는지 모르겠다(+규주님이 맞다고 하셨다). veiw에서 요청에 실패할 경우 응답을 보내는 방법(어떤 상태코드가 있는지)이 궁금하다.
