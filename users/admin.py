@@ -17,7 +17,7 @@ class UserAdmin(contrib.auth.admin.UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('code', 'name', 'password1', 'password2', 'is_staff', 'is_active')}
+            'fields': ('code', 'name', 'profile','password1', 'password2', 'is_staff', 'is_active')}
         ),
     )
     search_fields = ('code',)

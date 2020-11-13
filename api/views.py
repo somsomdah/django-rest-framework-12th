@@ -3,6 +3,9 @@ from .models import *
 from rest_framework.views import APIView
 from rest_framework import status,response,viewsets
 from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
+from.filters import *
+
 
 # Create your views here.
 
@@ -28,6 +31,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
             instance.save()
         serializer = self.get_serializer(instance)
         return response.Response(data=serializer.data,status=status.HTTP_200_OK)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProfileFilter
+
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer

@@ -410,10 +410,8 @@ __action(methods,detail,url_name,url_path)__
 - detail : True - pk 값 지정 필요
      - detail=True
         - url : /prefix/{pk}/{function name}/
-        - name : {model name}-{function name}
     - detail=False
         - url : /prefix/{function name}/
-        - name : {model name}-{function name}
 
 ### PUT vs PATCH
 - PUT의 경우 자원 전체를 갱신하는 의미지만, PATCH는 해당자원의 일부를 교체하는 의미로 사용.

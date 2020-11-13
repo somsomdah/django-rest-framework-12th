@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'django_extensions',
+    'django_filters',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
