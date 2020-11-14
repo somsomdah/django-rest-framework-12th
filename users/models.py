@@ -8,7 +8,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name=models.CharField(max_length=40)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    profile=models.OneToOneField(Profile,on_delete=models.SET_NULL,null=True,blank=True)
+    #profile=models.OneToOneField(Profile,on_delete=models.SET_NULL,null=True,blank=True)
 
     USERNAME_FIELD='code'
     REQUIRED_FIELDS = ['name','profile']

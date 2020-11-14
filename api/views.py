@@ -1,10 +1,11 @@
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from rest_framework import status,response,viewsets
+from rest_framework import status,response,viewsets,permissions
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
-from.filters import *
+from .filters import *
+from .permissions import *
 
 
 # Create your views here.
@@ -34,27 +35,33 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProfileFilter
+    permission_classes=[permissions.IsAdminUser] # staff일 경우에만 프로필 접근 허용
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     queryset = Department.objects.all()
+    permission_classes=[permissions.IsAuthenticated] # 로그인 시 접근 허용
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    pemission_classes = [IsSuperUserOrReadOnly] # SuperUser만 강의 개설, 삭제 허용
 
 class MajorViewSet(viewsets.ModelViewSet):
     serializer_class = MajorSerializer
     queryset = Major.objects.all()
+    permission_classes=[permissions.IsAuthenticated] # 로그인 시 접근 허용
 
 class MajorInViewSet(viewsets.ModelViewSet):
     serializer_class = MajorInSerializer
     queryset = MajorIn.objects.all()
+    permission_classes=[IsUserOrSuperUser] #자신의 전공정보만 접근 허용, 전공변경은 SuperUser만
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
+    permission_classes=[IsUserOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만
 
 
 '''

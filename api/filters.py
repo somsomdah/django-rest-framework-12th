@@ -3,14 +3,13 @@ from django_filters.rest_framework import FilterSet, filters
 
 
 class ProfileFilter(FilterSet):
-    name = filters.CharFilter(field_name='name', lookup_expr='icontains')
     group = filters.CharFilter(field_name='group')
     division = filters.CharFilter(field_name='division', method='filter_by_division')
     course=filters.CharFilter(field_name='course',method='filter_by_coursename')
 
     class Meta:
         model = Profile
-        fields = ['name', 'group']
+        fields = ['group']
 
     # 단대로 filtering
     def filter_by_division(self, queryset, name, value):

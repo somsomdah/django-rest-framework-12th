@@ -19,14 +19,15 @@ class MajorInSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Profile
-        fields=['id','code','group','name','department_id']
+        fields='__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model=Course
-        fields=['id','code','name','classroom','professor_id']
+        fields='__all__'
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Enrollment
         fields='__all__'
+
