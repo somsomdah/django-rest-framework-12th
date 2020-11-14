@@ -22,6 +22,8 @@ class ProfileFilter(FilterSet):
             if obj.division == value:
                 pks.append(obj.id)  # 특정 division에 해당하는 id 들 모두 append
 
+        pks=list(set(pks))
+
         for pk in pks:
             filtered = filtered | Profile.objects.filter(department_id=pk)
 

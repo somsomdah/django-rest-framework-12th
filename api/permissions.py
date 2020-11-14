@@ -21,7 +21,7 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
 class IsUserOrSuperUser(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        # 조회 요청은 해당 학생에 한해서만 가능
+        # 조회 요청은 해당 유저만 가능
         if request.method in permissions.SAFE_METHODS:
             return obj.profile==request.user
 

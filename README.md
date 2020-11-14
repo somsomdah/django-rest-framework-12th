@@ -440,3 +440,158 @@ class ProfileViewSet(viewsets.ModelViewSet):
 ```
  </div>
 </details>
+
+## 5주차 과제
+<details>
+ <summary> 과제 내용 보기 </summary>
+ <div markdown="1">
+ 
+ ## 1. Filtering
+ 
+__1. 사용자 그룹으로 필터링__
+ ```python
+# filters.py
+class ProfileFilter(FilterSet):
+    group = filters.CharFilter(field_name='group')
+    division = filters.CharFilter(field_name='division', method='filter_by_division')
+    course=filters.CharFilter(field_name='course',method='filter_by_coursename')
+
+    class Meta:
+        model = Profile
+        fields = ['group']
+
+
+ ```
+![](./imgs/filtering_1.PNG)
+  
+__2. 특정 단대로 필터링__
+```python
+    # 단대로 filtering
+    def filter_by_division(self, queryset, name, value):
+
+        pks = []
+        filtered = Profile.objects.none()
+
+        # Department테이블에서 특정 division에 해당하는 primary key들 가져오기
+        for obj in Department.objects.all():
+            if obj.division == value:
+                pks.append(obj.id)  # 특정 division에 해당하는 id 들 모두 append
+
+        pks=list(set(pks))
+
+        for pk in pks:
+            filtered = filtered | Profile.objects.filter(department_id=pk)
+
+        return filtered
+```
+![](./imgs/filtering_3.PNG)
+  
+  
+__3. 특정 강좌를 듣는 학생들 필터링__
+```python
+    # 특정 강좌에 등록한 학생들
+    def filter_by_coursename(self, queryset, name, value):
+
+        student_ids = []
+        course_id = Course.objects.get(name=value).id
+
+        for obj in Enrollment.objects.filter(course_id=course_id):
+            student_ids.append(obj.student_id)
+
+        filtered = Profile.objects.filter(id__in=student_ids)
+
+        return filtered
+```
+![](./imgs/filtering_2.PNG)
+ 
+ ## 2. Permissions
+ 
+ ### Django Permissions
+ - `AllowAny` 모든 요청에 대해 허가
+ - `IsAuthenticated` 유저가 존재하고 로그인 되어 있을 경우에 허가
+ - `IsAdminUser` 유저가 존재하고 스태프일 경우에 허가
+ - `IsAuthenticatedOrReadOnly` 안전한 request method 이거나 유저가 존재하고 로그인 되어 있을 경우에 허가
+ 
+```python
+class IsSuperUserOrReadOnly(permissions.BasePermission):
+
+    # 인증된 유저에 대해 접근 허용
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(slef, request, views, obj):
+        # 조회 요청은 항상 True
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        # PUT, DELETE 요청에 한해 SuperUser에게만 허용
+        return request.user.is_superuser
+
+
+class IsUserOrSuperUser(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        # 조회 요청은 해당 유저만 가능
+        if request.method in permissions.SAFE_METHODS:
+            return obj.profile==request.user
+
+        # PUT, DELETE 요청에 한해 SuperUser에게만 허용
+        return request.user.is_superuser
+```
+```python
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+
+    # url : api/profile/list-professors/
+    @action(methods=['get'],detail=False,url_path='list-professors')
+    def list_professors(self, request):
+        qs = self.queryset.filter(group="P")
+        serializer = self.get_serializer(qs, many=True)
+        return response.Response(data=serializer.data,status=status.HTTP_200_OK)
+
+    # url : api/profile/{pk}/set-graduate/
+    @action(methods=['patch'],detail=True,url_path='set-graduate')
+    def set_graduate(self, request, pk):
+        instance = self.get_object()
+        if instance.group=="U":
+            instance.group = "G"
+            instance.code = request.data['code']
+            instance.department_id=request.data['department_id']
+            instance.save()
+        serializer = self.get_serializer(instance)
+        return response.Response(data=serializer.data,status=status.HTTP_200_OK)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProfileFilter
+    permission_classes=[permissions.IsAdminUser] # staff일 경우에만 프로필 접근 허용
+
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+    permission_classes=[permissions.IsAuthenticated] # 로그인 시 접근 허용
+
+class CourseViewSet(viewsets.ModelViewSet):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+    pemission_classes = [IsSuperUserOrReadOnly] # SuperUser만 강의 개설, 삭제 허용
+
+class MajorViewSet(viewsets.ModelViewSet):
+    serializer_class = MajorSerializer
+    queryset = Major.objects.all()
+    permission_classes=[permissions.IsAuthenticated] # 로그인 시 접근 허용
+
+class MajorInViewSet(viewsets.ModelViewSet):
+    serializer_class = MajorInSerializer
+    queryset = MajorIn.objects.all()
+    permission_classes=[IsUserOrSuperUser] #자신의 전공정보만 접근 허용, 전공변경은 SuperUser만
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    serializer_class = EnrollmentSerializer
+    queryset = Enrollment.objects.all()
+    permission_classes=[IsUserOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만
+
+```
+
+ </div>
+</details>
