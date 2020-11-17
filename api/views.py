@@ -61,7 +61,7 @@ class MajorInViewSet(viewsets.ModelViewSet):
 class EnrollmentViewSet(viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
-    permission_classes=[IsUserOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만
+    permission_classes=[IsStudentOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만
 
 
 '''
