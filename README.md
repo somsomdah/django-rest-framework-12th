@@ -526,26 +526,22 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
         # PUT, DELETE 요청에 한해 SuperUser에게만 허용
         return request.user.is_superuser
 
-
 class IsUserOrSuperUser(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         # 조회 요청은 해당 유저만 가능
         if request.method in permissions.SAFE_METHODS:
-            return obj.profile==request.user
+            if hasattr(obj,"profile"):
+                return obj.profile==request.user
+            elif hasattr(obj,"student"):
+                return obj.student == request.user
+            else:
+                return False
 
         # PUT, DELETE 요청에 한해 SuperUser에게만 허용
         return request.user.is_superuser
 
-class IsStudentOrSuperUser(permissions.BasePermission):
 
-    def has_object_permission(self, request, view, obj):
-        # 조회 요청은 해당 유저만 가능
-        if request.method in permissions.SAFE_METHODS:
-            return obj.student==request.user
-
-        # PUT, DELETE 요청에 한해 SuperUser에게만 허용
-        return request.user.is_superuser
 
 ```
 ```python
