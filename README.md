@@ -536,6 +536,17 @@ class IsUserOrSuperUser(permissions.BasePermission):
 
         # PUT, DELETE 요청에 한해 SuperUser에게만 허용
         return request.user.is_superuser
+
+class IsStudentOrSuperUser(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        # 조회 요청은 해당 유저만 가능
+        if request.method in permissions.SAFE_METHODS:
+            return obj.student==request.user
+
+        # PUT, DELETE 요청에 한해 SuperUser에게만 허용
+        return request.user.is_superuser
+
 ```
 ```python
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -589,7 +600,7 @@ class MajorInViewSet(viewsets.ModelViewSet):
 class EnrollmentViewSet(viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
-    permission_classes=[IsUserOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만
+    permission_classes=[IsStudentOrSuperUser] #자신의 수강신청 정보만 접근 허용, 전공변경은 SuperUser만SSS
 
 ```
 
