@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+#from users.models import User
 
 class Department(models.Model):
     division = models.CharField(max_length=40)
